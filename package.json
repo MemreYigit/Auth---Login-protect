@@ -4,27 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx server.ts",
+    "dev": "node --watch server.js",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.112.3",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "pg": "^8.22.0",
     "swagger-ui-express": "^5.0.1"
-  },
-  "devDependencies": {
-    "@types/express": "^5.0.6",
-    "@types/node": "^26.1.1",
-    "@types/pg": "^8.21.0",
-    "@types/swagger-ui-express": "^4.1.8",
-    "tsx": "^4.23.0",
-    "typescript": "^7.0.2"
   }
 }
