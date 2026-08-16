@@ -1,20 +1,23 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Task API",
+    "title": "Auth Login Protect API",
     "version": "1.0.0",
-    "description": "A simple API to manage tasks with CRUD operations."
+    "description": "Authentication API backed by Supabase, with public and JWT-protected routes."
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
   },
   "paths": {
-    "/tasks": {
-      "get": {
-        "summary": "Get all tasks",
-        "responses": {
-          "200": { "description": "Successfully retrieved the list of tasks." }
-        }
-      },
+    "/auth/signup": {
       "post": {
-        "summary": "Create a new task",
+        "summary": "Create a new user account",
         "requestBody": {
           "required": true,
           "content": {
@@ -22,38 +25,24 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "title": { "type": "string" }
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string" }
                 },
-                "required": ["title"]
+                "required": ["email", "password"]
               }
             }
           }
         },
         "responses": {
-          "201": { "description": "Task created successfully." },
-          "400": { "description": "Invalid input." }
+          "201": { "description": "User created successfully." },
+          "400": { "description": "Email and password are required, or signup failed." },
+          "500": { "description": "Internal server error." }
         }
       }
     },
-    "/tasks/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the task",
-          "schema": { "type": "integer" }
-        }
-      ],
-      "get": {
-        "summary": "Get a task by ID",
-        "responses": {
-          "200": { "description": "Task found." },
-          "404": { "description": "Task not found." }
-        }
-      },
-      "put": {
-        "summary": "Update an existing task",
+    "/auth/login": {
+      "post": {
+        "summary": "Log in and receive access and refresh tokens",
         "requestBody": {
           "required": true,
           "content": {
@@ -61,25 +50,67 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "title": { "type": "string" },
-                  "done": { "type": "boolean" }
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string" }
                 },
-                "required": ["title", "done"]
+                "required": ["email", "password"]
               }
             }
           }
         },
         "responses": {
-          "200": { "description": "Task updated successfully." },
-          "400": { "description": "Invalid request body." },
-          "404": { "description": "Task not found." }
+          "200": { "description": "Login successful, returns access_token and refresh_token." },
+          "400": { "description": "Email and password are required." },
+          "401": { "description": "Invalid login credentials." },
+          "500": { "description": "Internal server error." }
         }
-      },
-      "delete": {
-        "summary": "Delete a task by ID",
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Log out the current user",
+        "security": [{ "bearerAuth": [] }],
         "responses": {
-          "200": { "description": "Task deleted successfully." },
-          "404": { "description": "Task not found." }
+          "204": { "description": "Logout successful, no content." },
+          "400": { "description": "Logout failed." },
+          "401": { "description": "Missing, invalid, or expired access token." },
+          "500": { "description": "Internal server error." }
+        }
+      }
+    },
+    "/public/info": {
+      "get": {
+        "summary": "Public information endpoint",
+        "responses": {
+          "200": { "description": "Successfully retrieved public info." }
+        }
+      }
+    },
+    "/protected/profile": {
+      "get": {
+        "summary": "Get the authenticated user's profile",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Successfully retrieved user profile." },
+          "401": { "description": "Missing, invalid, or expired access token." }
+        }
+      }
+    },
+    "/protected/dashboard": {
+      "get": {
+        "summary": "Get the authenticated user's dashboard",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Successfully retrieved dashboard." },
+          "401": { "description": "Missing, invalid, or expired access token." }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": { "description": "Service is healthy." }
         }
       }
     }
