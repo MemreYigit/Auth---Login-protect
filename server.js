@@ -100,6 +100,33 @@ app.get('/protected/dashboard', requireAuth, async (req, res) => {
   return res.status(200).json({ message: `Welcome to your dashboard, ${user.email}!` });
 });
 
+// Refresh Route
+app.post('/auth/refresh', async (req, res) => {
+  const { refresh_token } = req.body;
+
+  // Validate input
+  if (!refresh_token) {
+    return res.status(400).json({ error: 'Refresh token is required' });
+  }
+
+  try {
+    const { data, error } = await supabase.auth.refreshSession({ refresh_token });
+
+    // Handle errors from Supabase
+    if (error) {
+      return res.status(401).json({ error: 'Invalid or expired refresh token' });
+    }
+
+    // Return new access and refresh tokens
+    return res.status(200).json({
+      access_token: data.session.access_token,
+      refresh_token: data.session.refresh_token,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.get('/health', async (req, res) => {
   return res.json({ status: 'OK' });
 });

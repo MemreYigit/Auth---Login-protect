@@ -66,6 +66,31 @@
         }
       }
     },
+    "/auth/refresh": {
+      "post": {
+        "summary": "Exchange a refresh token for a new access token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refresh_token": { "type": "string" }
+                },
+                "required": ["refresh_token"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Refresh successful, returns a new access_token and refresh_token." },
+          "400": { "description": "Refresh token is required." },
+          "401": { "description": "Invalid or expired refresh token." },
+          "500": { "description": "Internal server error." }
+        }
+      }
+    },
     "/auth/logout": {
       "post": {
         "summary": "Log out the current user",
