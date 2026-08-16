@@ -1,0 +1,10 @@
+# dotenv environment variable files
+.env
+.env.*
+!.env.example
+
+# Ignore node_modules folder
+node_modules/
+
+# Compiled output
+dist/
