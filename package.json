@@ -1,5 +1,5 @@
 {
-  "name": "Containerize-your-stack",
+  "name": "Auth---Login-protect",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,6 +12,9 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "pg": "^8.22.0",
     "swagger-ui-express": "^5.0.1"
